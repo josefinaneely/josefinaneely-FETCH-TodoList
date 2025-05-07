@@ -9,3 +9,38 @@
     import 'relative/path/to/stylesheet.scss';
 
 */
+
+ul li {
+
+    border: 1px solid grey;
+    border-radius: 2%;
+    list-style: none;
+    padding: 6px;
+    margin: none;
+}
+
+
+h1 {
+    font-style: normal;
+    font-size: 60px;
+    text-align: center;
+    margin-bottom: 100px;
+    color: rgb(204, 196, 196);
+}
+
+body {
+    margin-top: 100px;
+
+}
+
+input {
+    border: none;
+    width: 100;
+
+}
+
+.icono {
+    justify-content: space-between;
+    width: 30px;
+    height: 30px;
+}
