@@ -10,43 +10,55 @@ const List = () => {
 
 
     useEffect(() => {
+        const createUser = async () => {
+            const respuesta = await fetch('https://playground.4geeks.com/todo/users/josefinaneely')
+            const data = await respuesta.json()
 
-        fetch('examples/example.json').then(response => {
-            if (response.ok) {
-                console.log('Si existe el usuario:', true); return response.json();
-            } else {
-                console.log('El usuario no existe:', false);
-                throw new Error('Error en la respuesta del servidor');
-            }
-        })
+            setTodos(data.todos)
+
+            console.log(data)
+        }
+        createUser()
+
+    }, []);
+
+
+    const handleDeleteTodo = async () => {
+        const todoID = todos[index].id;
+
+        const respuesta = await fetch('https://playground.4geeks.com/todo/todos{todoID}', {
+            method: 'DELETE'
+        }
+        )
+        const data = await respuesta.json()
+        if (respuesta.ok) {
+            const updatedTodos = todos.filter((todo) => todo.id !== idToDelete);
+            setTodos(updatedTodos);
+        }
+    }
 
 
 
-        fetch('https://playground.4geeks.com/todo/users/josefinaneely', {
+    const addTodo = async () => {
+        const newTodo = {
+            label: inputValue,
+            is_done: false,
+        }
+        const respuesta = await fetch('https://playground.4geeks.com/todo/todos/josefinaneely', {
             method: "POST",
+            body: JSON.stringify(newTodo),
             headers: {
                 "Content-Type": "application/json"
             }
         })
-    }, [])
 
+        if (respuesta.ok) {
 
-
-
-
-
-
-    const handleAddTodo = (e) => {
-        if (e.keyCode === 13 && inputValue.trim() !== "") {
-            setTodos([...todos, inputValue]);
-            setInputValue("");
+            setTodos([...todos, newTodo])
         }
-    };
 
-    const handleDeleteTodo = (index) => {
-        const newTodos = todos.filter((_, i) => i !== index);
-        setTodos(newTodos);
-    };
+    }
+
 
     return (
 
@@ -60,7 +72,7 @@ const List = () => {
                     onChange={(e) => setInputValue(e.target.value)}
                     value={inputValue}
                     onKeyUp={(e) => {
-                        if (e.key === "Enter") handleAddTodo(e);
+                        if (e.key === "Enter") addTodo();
                     }}
                     placeholder="What do I need to do" />
                 </li>
@@ -68,7 +80,7 @@ const List = () => {
 
                 {todos.map((todo, index) => (
                     <li key={index}>
-                        {todo} <IoIosClose className="icono" onClick={() => handleDeleteTodo(index)} />
+                        {todo.label} <IoIosClose className="icono" onClick={() => handleDeleteTodo(index)} />
 
                     </li>))}
 
