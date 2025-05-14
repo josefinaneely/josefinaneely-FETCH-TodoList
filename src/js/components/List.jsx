@@ -15,27 +15,37 @@ const List = () => {
             const data = await respuesta.json()
 
             setTodos(data.todos)
-
-            console.log(data)
         }
         createUser()
 
     }, []);
 
 
-    const handleDeleteTodo = async () => {
-        const todoID = todos[index].id;
-
-        const respuesta = await fetch('https://playground.4geeks.com/todo/todos{todoID}', {
+    const handleDeleteTodo = async (id) => {
+        const respuesta = await fetch(`https://playground.4geeks.com/todo/todos/${id}`, {
             method: 'DELETE'
         }
         )
-        const data = await respuesta.json()
+
         if (respuesta.ok) {
-            const updatedTodos = todos.filter((todo) => todo.id !== idToDelete);
+            const updatedTodos = todos.filter((todo) => todo.id !== id);
             setTodos(updatedTodos);
         }
     }
+
+
+    const deleteAllTodos = async () => {
+        for (const todo of todos) {
+            const respuesta = await fetch(`https://playground.4geeks.com/todo/todos/${todo.id}`, {
+                method: 'DELETE'
+            }
+            )
+
+            if (!respuesta.ok) throw new Error("Error al eliminar un to do")
+        }
+        setTodos([])
+    }
+
 
 
 
@@ -53,10 +63,10 @@ const List = () => {
         })
 
         if (respuesta.ok) {
-
-            setTodos([...todos, newTodo])
+            const data = await respuesta.json()
+            setTodos([...todos, data])
+            setInputValue("")
         }
-
     }
 
 
@@ -79,14 +89,21 @@ const List = () => {
 
 
                 {todos.map((todo, index) => (
-                    <li key={index}>
-                        {todo.label} <IoIosClose className="icono" onClick={() => handleDeleteTodo(index)} />
+                    <li key={index} className="todo">
+                        {todo.label} <IoIosClose className="icono" onClick={() => {
+                            handleDeleteTodo(todo.id)
+                            console.log(todo)
+                        }} />
 
                     </li>))}
 
 
             </ul>
-            <div> {todos.length}  tasks </div>
+            <div className='d-flex justify-content-between'>
+                <div> {todos.length} tasks </div>
+                <button className='btn btn-danger' onClick={deleteAllTodos}> Delete all tasks </button>
+            </div>
+
 
         </div>
 

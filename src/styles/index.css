@@ -44,3 +44,11 @@ input {
     width: 30px;
     height: 30px;
 }
+
+.todo .icono {
+    display: none;
+}
+
+.todo:hover .icono{
+    display:inline;
+}
